@@ -1,0 +1,14 @@
+export const {
+  APPLICATION_NAME,
+  STAGE,
+  REGION,
+  MONGO_URI,
+  IMAGE_UPLOAD_BUCKET,
+  FILE_UPLOAD_BUCKET,
+  FILE_UPLOADING_ENCODING,
+  BASE_URL,
+  LOG_LEVEL,
+  SYSTEM_EMAIL_ADDRESS = "visioinnovation@gmail.com",
+  UTILS_API_KEY,
+  UTILS_BASE_URL,
+} = process.env;

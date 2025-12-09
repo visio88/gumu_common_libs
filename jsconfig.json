@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      // "@libs/*": ["./libs/*"],
+      // "@utils/*": ["./utils/*"],
+      // "@database/*": ["./database/*"] cannot have due to same alias will be used on the root project (example auth backend has same alias and it will override this aliases and file will not resolve)
+    }
+  }
+}
