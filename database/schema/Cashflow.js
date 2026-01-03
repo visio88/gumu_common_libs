@@ -191,11 +191,11 @@ CashflowSchema.virtual('isExpense').get(function() {
 });
 
 // Pre-save middleware to update lastModifiedAt
-CashflowSchema.pre('save', function(next) {
+// Using async function to handle embedded documents properly
+CashflowSchema.pre('save', async function() {
   if (this.isModified()) {
     this.lastModifiedAt = new Date();
   }
-  next();
 });
 
 // Method to mark as verified

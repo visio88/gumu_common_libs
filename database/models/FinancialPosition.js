@@ -199,7 +199,8 @@ FinancialPositionSchema.index({ periodStart: 1, periodEnd: 1 });
 FinancialPositionSchema.index({ type: 1, status: 1 });
 
 // Pre-save middleware to calculate net position
-FinancialPositionSchema.pre('save', function(next) {
+// Using async function to handle session saves properly
+FinancialPositionSchema.pre('save', async function() {
   // Calculate net position
   this.netPosition = this.totalIncome - this.totalExpenses;
   
@@ -210,8 +211,6 @@ FinancialPositionSchema.pre('save', function(next) {
   if (this.isModified()) {
     this.lastModifiedAt = new Date();
   }
-  
-  next();
 });
 
 // Virtual for period duration

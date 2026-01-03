@@ -245,11 +245,10 @@ ExpenseSchema.virtual('isOverBudgetCalculated').get(function() {
 });
 
 // Pre-save middleware to update lastModifiedAt
-ExpenseSchema.pre('save', function(next) {
+ExpenseSchema.pre('save', async function() {
   if (this.isModified()) {
     this.lastModifiedAt = new Date();
   }
-  next();
 });
 
 // Method to mark as paid

@@ -33,6 +33,14 @@ const MembershipFeeSchema = new Schema(
       type: Boolean,
       default: true,
     },
+    // Payment status - marks if this fee has been paid
+    isPaid: {
+      type: Boolean,
+      default: false,
+    },
+    paidDate: {
+      type: Date,
+    },
     startDate: {
       type: Date,
       required: true,

@@ -168,9 +168,8 @@ const IncomeSchema = new mongoose.Schema({
 });
 
 // Update timestamps on save
-IncomeSchema.pre('save', function(next) {
+IncomeSchema.pre('save', async function() {
   this.updatedAt = new Date();
-  next();
 });
 
 // Indexes for efficient querying

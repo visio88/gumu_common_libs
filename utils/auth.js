@@ -19,13 +19,13 @@ export const generateToken = (userInfo) => {
     return null;
   }
 
-  // 60 * 1 means, 60s x 1 = 60s
+  // Token expires in 30 days (1 month)
   const token = jwt.sign(
     {
       data: userInfo,
     },
     process.env.JWT_SECRET,
-    { expiresIn: '10h' }
+    { expiresIn: '30d' }
   );
   return token;
 };

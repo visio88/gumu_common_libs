@@ -73,9 +73,8 @@ TaskSchema.pre('findOne', function () {
   this.where({ isDeleted: false });
 });
 
-TaskSchema.pre('save', function (next) {
+TaskSchema.pre('save', async function() {
   this.subTasks.updated_at = Date.now();
-  next();
 });
 
 // pre-sorted composite index for sorted data on Find Filter pagination
