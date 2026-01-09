@@ -77,11 +77,29 @@ export const getPaginationQuery = async (
         if (cursorField === "createdAt") {
           cursorParam = new Date(cursorParam).toISOString();
         }
-        filters = {
-          ...q,
-          [cursorField]: { [order.key_cursor]: new Date(cursorParam) },
-          _id: { [order.key]: cursorId },
-        };
+        const cursorDate = new Date(cursorParam);
+        
+        // Use $or for proper cursor-based pagination:
+        // - Items where cursorField < cursorDate (any _id), OR
+        // - Items where cursorField = cursorDate AND _id < cursorId (for descending)
+        // This ensures we get all items "after" the cursor in sort order
+        if (order.query === "descending") {
+          filters = {
+            ...q,
+            $or: [
+              { [cursorField]: { $lt: cursorDate } },
+              { [cursorField]: cursorDate, _id: { $lt: cursorId } }
+            ]
+          };
+        } else {
+          filters = {
+            ...q,
+            $or: [
+              { [cursorField]: { $gt: cursorDate } },
+              { [cursorField]: cursorDate, _id: { $gt: cursorId } }
+            ]
+          };
+        }
 
         sort[cursorField] = order.sort_order;
       } else {
@@ -89,9 +107,11 @@ export const getPaginationQuery = async (
       }
       sort._id = order.sort_order;
       prevCursorFilters = {
-        ...filters,
-        [cursorField]: { $gte: new Date(cursorParam) },
-        _id: { $gte: cursorId },
+        ...q,
+        $or: [
+          { [cursorField]: { $gt: new Date(cursorParam) } },
+          { [cursorField]: new Date(cursorParam), _id: { $gte: cursorId } }
+        ]
       };
       prevSortOrder._id = order.sort_order === -1 ? 1 : -1;
       prevSortOrder[cursorField] = order.sort_order === -1 ? 1 : -1;
