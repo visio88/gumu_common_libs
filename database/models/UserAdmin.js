@@ -40,6 +40,16 @@ const UserAdminSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    isSuperAdmin: {
+      type: Boolean,
+      default: true,
+    },
+    firstName: {
+      type: String,
+    },
+    lastName: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
@@ -52,8 +62,9 @@ UserAdminSchema.methods.generateAccessJWT = function () {
       emailAddress: this.emailAddress,
       registrationType: this.registrationType,
       loginMethod: this.loginMethod,
-      userRole: this.userRole,
+      userRole: this.isSuperAdmin ? 'Super Admin' : this.userRole,
       isActive: this.isActive,
+      isSuperAdmin: this.isSuperAdmin || false,
     };
     return generateToken(payload);
   } catch (error) {

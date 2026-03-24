@@ -41,6 +41,78 @@ const UserAccountOwnerSchema = new Schema(
       type: Boolean,
       default: true,
     },
+    isBlocked: {
+      type: Boolean,
+      default: false,
+    },
+    blockedAt: {
+      type: Date,
+    },
+    blockedReason: {
+      type: String,
+      trim: true,
+    },
+    subscription: {
+      plan: {
+        type: String,
+        enum: ['free', 'basic', 'premium', 'enterprise'],
+        default: 'free',
+      },
+      startDate: {
+        type: Date,
+      },
+      endDate: {
+        type: Date,
+      },
+      amount: {
+        type: Number,
+        default: 0,
+      },
+      currency: {
+        type: String,
+        default: 'LKR',
+      },
+      status: {
+        type: String,
+        enum: ['active', 'expired', 'cancelled', 'pending'],
+        default: 'pending',
+      },
+      lastPaymentDate: {
+        type: Date,
+      },
+      nextPaymentDate: {
+        type: Date,
+      },
+    },
+    paymentHistory: [{
+      amount: {
+        type: Number,
+        required: true,
+      },
+      currency: {
+        type: String,
+        default: 'LKR',
+      },
+      paymentDate: {
+        type: Date,
+        required: true,
+      },
+      paymentMethod: {
+        type: String,
+        enum: ['cash', 'bank_transfer', 'credit_card', 'debit_card', 'online_payment'],
+      },
+      description: {
+        type: String,
+      },
+      transactionId: {
+        type: String,
+      },
+      status: {
+        type: String,
+        enum: ['pending', 'completed', 'failed', 'refunded'],
+        default: 'completed',
+      },
+    }],
     accountCode: {
       type: String,
       unique: true,
@@ -76,6 +148,49 @@ const UserAccountOwnerSchema = new Schema(
     updatedBy: {
       type: Schema.Types.ObjectId,
       ref: 'TeamMember',
+    },
+    
+    // Organization Settings
+    settings: {
+      // Fingerprint device configuration
+      fingerprintDevice: {
+        deviceCode: {
+          type: String,
+          trim: true,
+        },
+        deviceName: {
+          type: String,
+          trim: true,
+        },
+        serverUrl: {
+          type: String,
+          trim: true,
+        },
+        isEnabled: {
+          type: Boolean,
+          default: false,
+        },
+        lastConnected: {
+          type: Date,
+        },
+      },
+      // General settings
+      timezone: {
+        type: String,
+        default: 'Asia/Colombo',
+      },
+      currency: {
+        type: String,
+        default: 'LKR',
+      },
+      dateFormat: {
+        type: String,
+        default: 'DD/MM/YYYY',
+      },
+      language: {
+        type: String,
+        default: 'en',
+      },
     },
   },
   { timestamps: true }
@@ -193,6 +308,13 @@ UserAccountOwnerSchema.virtual('loans', {
 // Ensure virtuals are included in JSON output
 UserAccountOwnerSchema.set('toJSON', { virtuals: true });
 UserAccountOwnerSchema.set('toObject', { virtuals: true });
+
+// Unique sparse index on deviceCode - ensures deviceCode is unique across all account owners
+// Sparse index allows null/undefined values (accounts without deviceCode won't conflict)
+UserAccountOwnerSchema.index(
+  { 'settings.fingerprintDevice.deviceCode': 1 },
+  { unique: true, sparse: true }
+);
 
 export default models.UserAccountOwner
   ? models.UserAccountOwner

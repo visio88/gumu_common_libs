@@ -127,8 +127,8 @@ const FinancialPositionSchema = new mongoose.Schema(
     // Currency and exchange rates
     currency: {
       type: String,
-      default: 'USD',
-      enum: ['USD', 'EUR', 'GBP', 'INR', 'CAD', 'AUD'],
+      default: 'LKR',
+      enum: ['LKR', 'USD', 'EUR', 'GBP', 'INR', 'CAD', 'AUD', 'NPR'],
     },
     exchangeRate: {
       type: Number,

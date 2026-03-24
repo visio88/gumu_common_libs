@@ -10,12 +10,12 @@ let conn = null;
 const connectDatabase = async () => {
   if (conn == null) {
     conn = await mongoose
-      .connect(MONGO_URI, { serverSelectionTimeoutMS: 7500, family: 4 })
+      .connect(MONGO_URI, { serverSelectionTimeoutMS: 20000, family: 4 })
       .then(logger.info('DB Connected Successfully'));
     return conn;
   }
   logger.info('Connection already established, reusing the existing connection');
   return conn;
 };
-
 export default connectDatabase;
+

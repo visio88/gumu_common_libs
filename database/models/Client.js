@@ -22,7 +22,6 @@ const ClientSchema = new Schema(
   uniqueId: {
       type: Number,
       required: true,
-      unique: true,
       min: 0,
       max: 1000,
     },
@@ -35,6 +34,14 @@ const ClientSchema = new Schema(
      enum: ['left_thumb', 'left_index', 'left_middle', 'left_ring', 'left_little', 
            'right_thumb', 'right_index', 'right_middle', 'right_ring', 'right_little'],
   },
+    fingerprintActiveStatus: {
+      type: Boolean,
+      default: false,
+    },
+    deviceCode: {
+      type: String,
+      required: true,
+    },
     attendance: { type: String },
     message: {
       type: String,
@@ -81,6 +88,7 @@ const ClientSchema = new Schema(
     membershipPackage: {
       type: Schema.Types.ObjectId,
       ref: 'MembershipPackage',
+      required: true,
     },
     membershipStartDate: {
       type: Date,
@@ -101,8 +109,9 @@ ClientSchema.index({
   createdAt: -1,
 });
 
-// Ensure uniqueId is unique across all documents
-// Note: uniqueId already has unique: true in schema definition
+// Compound unique index: uniqueId is unique per account owner (rootUser)
+// This allows each account owner to have clients with uniqueId 1-1000 independently
+ClientSchema.index({ rootUser: 1, uniqueId: 1 }, { unique: true });
 
 // // Add pre-save middleware to auto-increment templateId
 // ClientSchema.pre('save', async function(next) {

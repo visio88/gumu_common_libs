@@ -1,6 +1,6 @@
 {
   "name": "@visio88/gumu_common_libs",
-  "version": "0.1.10",
+  "version": "0.1.25",
   "description": "common modules for the iPass microservices",
   "main": "index.js",
   "scripts": {
