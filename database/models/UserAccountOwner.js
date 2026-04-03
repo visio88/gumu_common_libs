@@ -58,6 +58,11 @@ const UserAccountOwnerSchema = new Schema(
         enum: ['free', 'basic', 'premium', 'enterprise'],
         default: 'free',
       },
+      billingCycle: {
+        type: String,
+        enum: ['monthly', 'quarterly', 'semi_annual', 'annual'],
+        default: 'monthly',
+      },
       startDate: {
         type: Date,
       },
@@ -109,8 +114,15 @@ const UserAccountOwnerSchema = new Schema(
       },
       status: {
         type: String,
-        enum: ['pending', 'completed', 'failed', 'refunded'],
+        enum: ['pending', 'completed', 'failed', 'refunded', 'rejected'],
         default: 'completed',
+      },
+      submittedBy: {
+        type: String,
+        enum: ['account_owner', 'superadmin'],
+      },
+      reviewedAt: {
+        type: Date,
       },
     }],
     accountCode: {
